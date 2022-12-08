@@ -6,7 +6,7 @@
     "build": "vite build",
     "lint": "eslint . --ext ts,.tsx && tsc --pretty",
     "tsc": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install | echo"
   },
   "dependencies": {
     "@emotion/react": "^11.10.4",

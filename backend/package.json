@@ -32,6 +32,6 @@
   "scripts": {
     "build": "tsc",
     "lint": "tsc --pretty",
-    "prepare": "husky install"
+    "prepare": "husky install | echo"
   }
 }
