@@ -10,4 +10,4 @@ Comprehensive royalty analytics for Solana NFT collections.
 
 ## Docs
 
-View frontend and backend docs.
+View [frontend](https://github.com/vbstreetz/royalty-tools/blob/main/frontend/README.md) and [backend](https://github.com/vbstreetz/royalty-tools/blob/main/backend/README.md) docs.
