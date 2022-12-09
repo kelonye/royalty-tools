@@ -27,14 +27,10 @@ export default function () {
 
     const query = getQueryParams(collectionSymbol, req.query);
 
-    const dbQuery: Record<string, any> = {
-      $or: [query],
-    };
-
     const c = await db.collection();
     const [totalCount, sales] = await Promise.all([
-      c.count(dbQuery),
-      c.find(dbQuery).sort('time', -1).skip(frm).limit(count),
+      c.count(query),
+      c.find(query).sort('time', -1).skip(frm).limit(count),
     ]);
 
     res.json({
