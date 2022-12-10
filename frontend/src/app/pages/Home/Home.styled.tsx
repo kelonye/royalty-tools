@@ -10,5 +10,5 @@ export const Container = styled('div')(({ theme: { breakpoints } }) => ({
   gap: '0.25rem',
   flex: 1,
   gridTemplateRows: '5rem 1fr 1fr',
-  gridTemplateColumns: '14rem 14rem 1fr',
+  gridTemplateColumns: '12rem 12rem 1fr',
 }));

@@ -7,6 +7,8 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowUpRightFromSquare as openIcon } from '@fortawesome/free-solid-svg-icons';
 import { Pagination } from '@mui/lab';
 import moment from 'moment';
 
@@ -56,6 +58,7 @@ const TableLayout: React.FC = () => {
               <TableCell align='right'>Price (SOL)</TableCell>
               <TableCell align='right'>Royalty Fee (SOL)</TableCell>
               <TableCell align='right'>Market Fee (SOL)</TableCell>
+              <TableCell align='right'></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -87,6 +90,21 @@ const TableLayout: React.FC = () => {
                   </TableCell>
                   <TableCell align='right'>
                     {formatPreciseNumber(sale.market_fee)}
+                  </TableCell>
+                  <TableCell align='right'>
+                    <a
+                      href={`https://solscan.io/tx/${sale.signature}`}
+                      target='_black'
+                      rel='noreferrer noopener'
+                      className='flex items-center hover:underline text-xs'
+                    >
+                      VIEW
+                      <FontAwesomeIcon
+                        width={10}
+                        icon={openIcon}
+                        className='ml-1'
+                      />
+                    </a>
                   </TableCell>
                 </TableRow>
               ))
