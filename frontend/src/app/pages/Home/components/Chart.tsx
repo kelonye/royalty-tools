@@ -1,28 +1,44 @@
 import React from 'react';
-import { Chart, ArcElement, Legend, LayoutPosition } from 'chart.js';
-import { Pie } from 'react-chartjs-2';
+import { LineChart, PieChart, BarChart, FixedScaleAxis } from 'chartist';
+
+import moment from 'moment';
 
 import { useCoralCube } from '@app/contexts/coral-cube';
 import { useRequest } from '@app/hooks/useRequest';
 
 import * as S from './Chart.styled';
 
-Chart.register(ArcElement, Legend);
+const COLORS = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600'];
 
 type ChartData = {
-  labels: string[];
-  datasets: {
-    data: number[];
-    backgroundColor: string[];
-  }[];
+  sales: {
+    labels: string[];
+    series: number[][];
+  };
+  markets: {
+    labels: string[];
+    series: number[];
+  };
 };
 
-const options = {
-  plugins: {
-    legend: {
-      position: 'right' as LayoutPosition,
-      color: '#6e6e6e',
-    },
+const SALES_CHART_OPTIONS: any = {
+  low: 0,
+  showArea: true,
+  showLine: true,
+  showPoint: false,
+  fullWidth: true,
+  axisX: {
+    // type: FixedScaleAxis,
+    // divisor: 4,
+    // labelInterpolationFnc: function (value: any) {
+    //   return moment.unix(value).format('MMM D');
+    // },
+  },
+};
+
+const MARKETS_CHART_OPTIONS: any = {
+  labelInterpolationFnc: function (value: number, n: number) {
+    return value;
   },
 };
 
@@ -31,15 +47,84 @@ const ChartLayout: React.FC = () => {
   const endpoint = collection ? `/chart/${collection}` : null;
   const data = useRequest<ChartData>(endpoint, query);
 
-  return (
-    <S.Container className='flex justify-center items-center'>
-      <div className='h-[300px]'>
-        {!data.result ? null : (
-          <Pie width={400} height={400} data={data.result} {...{ options }} />
-        )}
-      </div>
-    </S.Container>
+  return !data.result ? null : (
+    <>
+      <S.Container name='sales'>
+        <div className='font-bold mb-2 text-primary pl-8'>
+          7-Day Sales History
+        </div>
+        <div>
+          <ChartistGraph
+            data={data.result.sales}
+            options={SALES_CHART_OPTIONS}
+            type={'Line'}
+          />
+        </div>
+      </S.Container>
+      <S.Container name='markets'>
+        <div className='font-bold mb-2 text-primary pl-8'>Market Share</div>
+        <div>
+          <ChartistGraph
+            data={data.result.markets}
+            options={MARKETS_CHART_OPTIONS}
+            type={'Pie'}
+          />
+        </div>
+      </S.Container>
+    </>
   );
 };
 
 export default ChartLayout;
+
+const ChartistGraph: React.FC<{
+  type: 'Line' | 'Bar' | 'Pie';
+  data: any;
+  options: any;
+  responsiveOptions?: any;
+}> = ({ type, data, options, responsiveOptions }) => {
+  const el = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    if (el.current) {
+      let chart;
+      switch (type) {
+        case 'Line':
+          chart = new LineChart(el.current, data, options, responsiveOptions);
+          break;
+        case 'Bar':
+          chart = new BarChart(el.current, data, options, responsiveOptions);
+          break;
+        case 'Pie':
+          chart = new PieChart(el.current, data, options, responsiveOptions);
+          break;
+      }
+      if (chart) {
+        chart.on('draw', function (data: any) {
+          if (data.type === 'line') {
+            data.element.attr({
+              style: `stroke: ${COLORS[1]}; stroke-width: 2px;`,
+            });
+          }
+          if (data.type === 'area') {
+            data.element.attr({
+              style: `fill: ${COLORS[1]};`,
+            });
+          }
+          if (data.type === 'grid') {
+            data.element.attr({
+              style: 'stroke: rgba(255,255,255,.2);',
+            });
+          }
+          if (data.type === 'slice') {
+            data.element.attr({
+              style: `fill: ${COLORS[data.index]};`,
+            });
+          }
+        });
+      }
+    }
+  }, [type, data, options, responsiveOptions]);
+
+  return <div className='ct-chart' ref={el} />;
+};

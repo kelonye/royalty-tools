@@ -1,9 +1,10 @@
 import express from 'express';
 import * as db from '../utils/db';
 import { COLLECTIONS } from '../config';
+import moment from 'moment';
+import { orderBy } from 'lodash';
 
 const MAX_PAGE_COUNT = 100;
-const MARKET_COLORS = ['#003f5c', '#58508d', '#bc5090', '#ff6361', '#ffa600'];
 
 export default function () {
   const app = express.Router();
@@ -45,33 +46,66 @@ export default function () {
     const {
       params: { collectionSymbol },
     } = req;
-    const query = getQueryParams(collectionSymbol, req.query);
+    const query = getCollectionQueryParams(collectionSymbol);
 
-    const markets = await c
-      .aggregate([
-        {
-          $match: query,
-        },
-        {
-          $group: {
-            _id: '$marketplace',
-            count: { $sum: 1 },
+    const [markets, daySales] = await Promise.all([
+      c
+        .aggregate([
+          {
+            $match: query,
           },
-        },
-      ])
-      .toArray();
+          {
+            $group: {
+              _id: '$marketplace',
+              count: { $sum: 1 },
+            },
+          },
+        ])
+        .toArray(),
+      c
+        .aggregate([
+          {
+            $match: {
+              ...query,
+              time: { $gte: moment.utc().subtract(1, 'week').toISOString() },
+            },
+          },
+          {
+            $project: {
+              date: {
+                $dateFromString: {
+                  dateString: '$time',
+                },
+              },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                $dateToString: {
+                  format: '%m-%d',
+                  date: '$date',
+                },
+              },
+              count: { $count: {} },
+            },
+          },
+        ])
+        .toArray(),
+    ]);
 
-    const labels = markets.map((market) => market._id);
-    const datasets = [
-      {
-        data: markets.map((market) => market.count),
-        backgroundColor: markets.map(
-          (market, i) => MARKET_COLORS[i % MARKET_COLORS.length]
-        ),
+    const sortedDaySales = orderBy(daySales, '_id', 'asc');
+
+    res.json({
+      sales: {
+        labels: sortedDaySales.map((day) => day._id),
+        series: [sortedDaySales.map((day) => day.count)],
       },
-    ];
-
-    res.json({ labels, datasets });
+      markets: {
+        labels: markets.map((market) => market._id),
+        series: markets.map((market) => market.count),
+      },
+    });
   });
 
   app.get('/summary/:collectionSymbol', async (req, res) => {
@@ -80,7 +114,7 @@ export default function () {
     const {
       params: { collectionSymbol },
     } = req;
-    const query = getQueryParams(collectionSymbol, req.query);
+    const query = getCollectionQueryParams(collectionSymbol);
 
     const [totalSales, totalUnPaidSales, totalMarketFee, totalPrice] =
       await Promise.all([
@@ -148,5 +182,11 @@ function getQueryParams(collectionSymbol: string, query: any) {
           },
         }
       : null),
+  };
+}
+
+function getCollectionQueryParams(collectionSymbol: string) {
+  return {
+    collection_symbol: collectionSymbol,
   };
 }

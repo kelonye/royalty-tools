@@ -19,7 +19,7 @@ type SummaryData = {
 };
 
 const Summary: React.FC = () => {
-  const { collection, query, paidSales } = useCoralCube();
+  const { collection, query } = useCoralCube();
   const endpoint = collection ? `/summary/${collection}` : null;
   const { result: summary } = useRequest<SummaryData>(endpoint, query);
 
@@ -31,19 +31,13 @@ const Summary: React.FC = () => {
           <div className='ml-2'>ROYALTIES</div>
         </div>
         <div>
-          {paidSales ? (
-            <>{formatPreciseNumber(summary.totalPotentialRoyalty)} SOL earned</>
-          ) : (
-            <>
-              {!summary.totalPotentialRoyalty
-                ? 0
-                : formatNumber(
-                    summary.totalRoyaltyPaid / summary.totalPotentialRoyalty
-                  )}
-              % ({formatPreciseNumber(summary.totalRoyaltyPaid)}/
-              {formatPreciseNumber(summary.totalPotentialRoyalty)} SOL) earned
-            </>
-          )}
+          {!summary.totalPotentialRoyalty
+            ? 0
+            : formatNumber(
+                summary.totalRoyaltyPaid / summary.totalPotentialRoyalty
+              )}
+          % ({formatPreciseNumber(summary.totalRoyaltyPaid)}/
+          {formatPreciseNumber(summary.totalPotentialRoyalty)} SOL) earned
         </div>
       </S.Container>
       <S.Container name='sales'>
@@ -52,16 +46,10 @@ const Summary: React.FC = () => {
           <div className='ml-2'>SALES</div>
         </div>
         <div>
-          {paidSales ? (
-            <>{summary.totalSales} paid sales</>
-          ) : (
-            <>
-              {!summary.totalSales
-                ? 0
-                : formatNumber(summary.totalPaidSales / summary.totalSales)}
-              % ({summary.totalPaidSales}/{summary.totalSales}) paid sales
-            </>
-          )}
+          {!summary.totalSales
+            ? 0
+            : formatNumber(summary.totalPaidSales / summary.totalSales)}
+          % ({summary.totalPaidSales}/{summary.totalSales}) paid sales
         </div>
       </S.Container>
     </>
