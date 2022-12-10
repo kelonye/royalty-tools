@@ -16,7 +16,7 @@ export const App: FC = () => {
   return (
     <LocalizationProvider
       dateAdapter={AdapterMoment}
-      localeText={{ start: 'Start', end: 'End' }}
+      localeText={{ start: 'From', end: 'To' }}
       locale='en-GB'
     >
       <MUIThemeProvider theme={muiTheme}>
