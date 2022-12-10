@@ -17,6 +17,8 @@ export const Container = styled(
       : palette.background.paper,
   borderRadius: BORDER_RADIUS,
   padding: '1rem',
+  display: 'flex',
+  flexDirection: 'column',
 
   '& > div': {
     '&:nth-of-type(odd)': {
@@ -29,3 +31,9 @@ export const Container = styled(
     },
   },
 }));
+
+export const Grid = styled('div')({
+  display: 'grid',
+  gridTemplateColumns: '50px 1fr',
+  gapColumnGap: '0.5rem',
+});

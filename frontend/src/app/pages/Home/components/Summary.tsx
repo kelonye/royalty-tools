@@ -26,31 +26,44 @@ const Summary: React.FC = () => {
   return !summary ? null : (
     <>
       <S.Container name='royalty'>
-        <div className='flex flex-grow items-center'>
+        <div className='flex flex-grow items-center mb-1'>
           <FontAwesomeIcon width={14} icon={royaltiesIcon} />
           <div className='ml-2'>ROYALTIES</div>
         </div>
-        <div>
-          {!summary.totalPotentialRoyalty
-            ? 0
-            : formatNumber(
-                summary.totalRoyaltyPaid / summary.totalPotentialRoyalty
-              )}
-          % ({formatPreciseNumber(summary.totalRoyaltyPaid)}/
-          {formatPreciseNumber(summary.totalPotentialRoyalty)} SOL) earned
-        </div>
+        <S.Grid>
+          <div>earned:</div>
+          <div>{formatPreciseNumber(summary.totalRoyaltyPaid)} SOL</div>
+          <div>total:</div>
+          <div>{formatPreciseNumber(summary.totalPotentialRoyalty)} SOL</div>
+          <div>rate:</div>
+          <div>
+            {!summary.totalPotentialRoyalty
+              ? 0
+              : formatNumber(
+                  summary.totalRoyaltyPaid / summary.totalPotentialRoyalty
+                )}
+            %
+          </div>
+        </S.Grid>
       </S.Container>
       <S.Container name='sales'>
-        <div className='flex flex-grow items-center'>
+        <div className='flex flex-grow items-center mb-1'>
           <FontAwesomeIcon width={14} icon={salesIcon} />
           <div className='ml-2'>SALES</div>
         </div>
-        <div>
-          {!summary.totalSales
-            ? 0
-            : formatNumber(summary.totalPaidSales / summary.totalSales)}
-          % ({summary.totalPaidSales}/{summary.totalSales}) paid sales
-        </div>
+        <S.Grid>
+          <div>paid:</div>
+          <div>{summary.totalPaidSales}</div>
+          <div>total:</div>
+          <div>{summary.totalSales}</div>
+          <div>rate:</div>
+          <div>
+            {!summary.totalSales
+              ? 0
+              : formatNumber(summary.totalPaidSales / summary.totalSales)}
+            %
+          </div>
+        </S.Grid>
       </S.Container>
     </>
   );
