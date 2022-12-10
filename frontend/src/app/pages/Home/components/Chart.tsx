@@ -1,10 +1,8 @@
 import React from 'react';
-import { LineChart, PieChart, BarChart, FixedScaleAxis } from 'chartist';
-
-import moment from 'moment';
+import { LineChart, PieChart, BarChart } from 'chartist';
 
 import { useCoralCube } from '@app/contexts/coral-cube';
-import { useRequest } from '@app/hooks/useRequest';
+import { DEFAULT_QUERY, useRequest } from '@app/hooks/useRequest';
 
 import * as S from './Chart.styled';
 
@@ -43,9 +41,9 @@ const MARKETS_CHART_OPTIONS: any = {
 };
 
 const ChartLayout: React.FC = () => {
-  const { collection, query } = useCoralCube();
+  const { collection } = useCoralCube();
   const endpoint = collection ? `/chart/${collection}` : null;
-  const data = useRequest<ChartData>(endpoint, query);
+  const data = useRequest<ChartData>(endpoint, DEFAULT_QUERY);
 
   return !data.result ? null : (
     <>

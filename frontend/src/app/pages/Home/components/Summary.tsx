@@ -5,7 +5,7 @@ import {
   faReceipt as salesIcon,
 } from '@fortawesome/free-solid-svg-icons';
 
-import { useRequest } from '@app/hooks/useRequest';
+import { DEFAULT_QUERY, useRequest } from '@app/hooks/useRequest';
 import { useCoralCube } from '@app/contexts/coral-cube';
 import { formatNumber, formatPreciseNumber } from '@app/utils/bn';
 
@@ -19,9 +19,9 @@ type SummaryData = {
 };
 
 const Summary: React.FC = () => {
-  const { collection, query } = useCoralCube();
+  const { collection } = useCoralCube();
   const endpoint = collection ? `/summary/${collection}` : null;
-  const { result: summary } = useRequest<SummaryData>(endpoint, query);
+  const { result: summary } = useRequest<SummaryData>(endpoint, DEFAULT_QUERY);
 
   return !summary ? null : (
     <>
