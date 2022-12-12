@@ -12,3 +12,5 @@ export const COLLECTIONS = new Map([
   ['cets_on_creck', '7kXNeiFqgytP1NB9Q3Dt8z8WrCsQUSEwATK8UGZ8eiYL'],
   ['famous_fox_federation', '3pMvTLUA9NzZQd4gi725p89mvND1wRNQM3C8XEv1hTdA'],
 ]);
+
+export const ROYALTY_RATE = 3;

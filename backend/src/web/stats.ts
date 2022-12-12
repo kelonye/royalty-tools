@@ -1,6 +1,6 @@
 import express from 'express';
 import * as db from '../utils/db';
-import { COLLECTIONS } from '../config';
+import { COLLECTIONS, ROYALTY_RATE } from '../config';
 import moment from 'moment';
 import { orderBy } from 'lodash';
 
@@ -142,7 +142,8 @@ export default function () {
       totalSales,
       totalPaidSales: totalSales - totalUnPaidSales,
       totalRoyaltyPaid: totalMarketFee[0]?.totalMarketFee ?? 0,
-      totalPotentialRoyalty: (totalPrice[0]?.totalPrice ?? 0) * 0.01243243243,
+      totalPotentialRoyalty:
+        ((totalPrice[0]?.totalPrice ?? 0) * ROYALTY_RATE) / 100,
     });
   });
 
