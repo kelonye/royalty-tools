@@ -13,12 +13,15 @@ const LIMIT = 10;
 export default sync;
 
 async function sync(fromNow?: boolean) {
-  for (const [collectionSymbol, updateAuthority] of COLLECTIONS.entries()) {
-    try {
-      await syncCollection(collectionSymbol, updateAuthority, fromNow);
-    } catch (e) {
-      console.warn(e);
-    }
+  try {
+    await Promise.allSettled(
+      Array.from(COLLECTIONS.entries()).map(
+        ([collectionSymbol, updateAuthority]) =>
+          syncCollection(collectionSymbol, updateAuthority, fromNow)
+      )
+    );
+  } catch (e) {
+    console.warn(e);
   }
 }
 
@@ -93,5 +96,5 @@ async function syncCollection(
     }
   }
 
-  debug('complete');
+  debug('%s: complete', collectionSymbol);
 }
