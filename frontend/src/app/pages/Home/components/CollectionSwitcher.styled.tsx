@@ -1,6 +1,6 @@
 import { styled, Button as MUIButton, Menu as MUIMenu } from '@mui/material';
 
-const WIDTH = 200;
+const WIDTH = 250;
 
 export const Container = styled('div')(
   ({
