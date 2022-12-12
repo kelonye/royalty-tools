@@ -9,6 +9,7 @@ import * as db from '../utils/db';
 
 const debug = Debug('backend:stats');
 const LIMIT = 10;
+const TIMEOUT = 1000 * 60 * 3; // 3 minutes
 
 export default sync;
 
@@ -23,6 +24,8 @@ async function sync(fromNow?: boolean) {
   } catch (e) {
     console.warn(e);
   }
+  await db.teardown();
+  debug('done');
 }
 
 async function syncCollection(
@@ -67,14 +70,20 @@ async function syncCollection(
         ...(!oldestSale ? null : { time: oldestSale.time }),
       });
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+
     const sales: Sale[] = await (
       await fetch(url, {
         headers: {
           'user-agent':
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36',
         },
+        signal: controller.signal,
       })
     ).json();
+
+    clearTimeout(timeoutId);
 
     if (sales.length) {
       const bulkWriteOpts = sales.map((sale) => ({

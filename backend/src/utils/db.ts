@@ -13,7 +13,7 @@ export async function collection() {
 }
 
 export async function teardown() {
-  await client.close();
+  await client.close(true);
   connected = false;
   return;
 }

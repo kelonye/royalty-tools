@@ -5,6 +5,9 @@ import * as db from '../src/utils/db';
 sync()
   .catch((err) => {
     console.error(err);
-    process.exit(1);
   })
-  .finally(db.teardown);
+  .finally(() => {
+    db.teardown().finally(() => {
+      process.exit(0);
+    });
+  });
