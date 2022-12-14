@@ -33,7 +33,7 @@ async function syncCollection(
   updateAuthority: string,
   fromNow?: boolean
 ) {
-  const c = await db.collection();
+  const c = db.collection();
   const noOfSales = fromNow
     ? 0
     : await c.count({

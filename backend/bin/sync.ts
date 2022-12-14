@@ -1,13 +1,7 @@
 import './utils/dotenv';
-import sync from '../src/sync';
 import * as db from '../src/utils/db';
+import sync from '../src/sync';
 
-sync()
-  .catch((err) => {
-    console.error(err);
-  })
-  .finally(() => {
-    db.teardown().finally(() => {
-      process.exit(0);
-    });
-  });
+db.connect()
+  .then(() => sync())
+  .finally(db.teardown);

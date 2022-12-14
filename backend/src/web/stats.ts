@@ -28,7 +28,7 @@ export default function () {
 
     const query = getQueryParams(collectionSymbol, req.query);
 
-    const c = await db.collection();
+    const c = db.collection();
     const [totalCount, sales] = await Promise.all([
       c.count(query),
       c.find(query).sort('time', -1).skip(frm).limit(count),
@@ -41,7 +41,7 @@ export default function () {
   });
 
   app.get('/chart/:collectionSymbol', async (req, res) => {
-    const c = await db.collection();
+    const c = db.collection();
 
     const {
       params: { collectionSymbol },
@@ -109,7 +109,7 @@ export default function () {
   });
 
   app.get('/summary/:collectionSymbol', async (req, res) => {
-    const c = await db.collection();
+    const c = db.collection();
 
     const {
       params: { collectionSymbol },
